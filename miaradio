@@ -1,0 +1,24 @@
+#!/bin/bash
+PRG="mplayer -ao alsa -cache 128 -cache-min 80"
+RADIOLIST=~/radio.txt
+#echo $RADIOLIST
+NS=$(cat $RADIOLIST | wc -l)
+echo $NS
+if [ $# -lt 1 ]; then
+    killall $PRG 2>/dev/null
+        cat $RADIOLIST | cut -d '	' -f1,2;
+        echo -e "Scegliere numero: "
+        read scelta
+else
+    scelta=$1
+fi
+if [[ $scelta -gt $NS ]]
+then
+    echo "Stazione inesistente"
+    exit
+fi
+if [ $DISPLAY ]; then
+    nohup xterm -fg red -bg black -e $PRG $(cat $RADIOLIST | grep "${scelta})" | cut -d '	' -f3)&
+else
+    $PRG  $(cat $RADIOLIST | grep "${scelta})" | cut -d '	' -f3)
+fi
